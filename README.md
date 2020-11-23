@@ -1,3 +1,6 @@
+[![NPM version](https://badge.fury.io/js/cdk-bar.svg)](https://badge.fury.io/js/cdk-noob)
+[![PyPI version](https://badge.fury.io/py/cdk-bar.svg)](https://badge.fury.io/py/cdk-noob)
+![Release](https://github.com/bgreengo/cdk-noob/workflows/Release/badge.svg)
 # cdk-noob
 
 A demo construct library created with Projen
