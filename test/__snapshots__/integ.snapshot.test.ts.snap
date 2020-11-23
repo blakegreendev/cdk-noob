@@ -1,0 +1,627 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`integ snapshot validation 1`] = `
+Object {
+  "Outputs": Object {
+    "mynoobserviceLoadBalancerDNS4373CFF6": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "mynoobserviceLB4D29DBB2",
+          "DNSName",
+        ],
+      },
+    },
+    "mynoobserviceServiceURL0F82B7B4": Object {
+      "Value": Object {
+        "Fn::Join": Array [
+          "",
+          Array [
+            "http://",
+            Object {
+              "Fn::GetAtt": Array [
+                "mynoobserviceLB4D29DBB2",
+                "DNSName",
+              ],
+            },
+          ],
+        ],
+      },
+    },
+  },
+  "Resources": Object {
+    "mynoobcluster3C0745BF": Object {
+      "Type": "AWS::ECS::Cluster",
+    },
+    "mynoobserviceLB4D29DBB2": Object {
+      "DependsOn": Array [
+        "mynoobvpcPublicSubnet1DefaultRoute98CF4ECD",
+        "mynoobvpcPublicSubnet2DefaultRouteF1860114",
+      ],
+      "Properties": Object {
+        "LoadBalancerAttributes": Array [
+          Object {
+            "Key": "deletion_protection.enabled",
+            "Value": "false",
+          },
+        ],
+        "Scheme": "internet-facing",
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "mynoobserviceLBSecurityGroupCAC7E5DE",
+              "GroupId",
+            ],
+          },
+        ],
+        "Subnets": Array [
+          Object {
+            "Ref": "mynoobvpcPublicSubnet1SubnetE3F8B341",
+          },
+          Object {
+            "Ref": "mynoobvpcPublicSubnet2SubnetCC5168CD",
+          },
+        ],
+        "Type": "application",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+    },
+    "mynoobserviceLBPublicListener8D700E6B": Object {
+      "Properties": Object {
+        "DefaultActions": Array [
+          Object {
+            "TargetGroupArn": Object {
+              "Ref": "mynoobserviceLBPublicListenerECSGroup0909E690",
+            },
+            "Type": "forward",
+          },
+        ],
+        "LoadBalancerArn": Object {
+          "Ref": "mynoobserviceLB4D29DBB2",
+        },
+        "Port": 80,
+        "Protocol": "HTTP",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+    },
+    "mynoobserviceLBPublicListenerECSGroup0909E690": Object {
+      "Properties": Object {
+        "Port": 80,
+        "Protocol": "HTTP",
+        "TargetType": "ip",
+        "VpcId": Object {
+          "Ref": "mynoobvpcED49933C",
+        },
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    },
+    "mynoobserviceLBSecurityGroupCAC7E5DE": Object {
+      "Properties": Object {
+        "GroupDescription": "Automatically created Security Group for ELB mynoobstackmynoobserviceLB5D99FAB6",
+        "SecurityGroupIngress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow from anyone on port 80",
+            "FromPort": 80,
+            "IpProtocol": "tcp",
+            "ToPort": 80,
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "mynoobvpcED49933C",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "mynoobserviceLBSecurityGrouptomynoobstackmynoobserviceServiceSecurityGroupEECF67F380818FB1A2": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "mynoobserviceServiceSecurityGroup0C79B0A9",
+            "GroupId",
+          ],
+        },
+        "FromPort": 80,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "mynoobserviceLBSecurityGroupCAC7E5DE",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 80,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "mynoobserviceServiceD7ED3A6A": Object {
+      "DependsOn": Array [
+        "mynoobserviceLBPublicListenerECSGroup0909E690",
+        "mynoobserviceLBPublicListener8D700E6B",
+      ],
+      "Properties": Object {
+        "Cluster": Object {
+          "Ref": "mynoobcluster3C0745BF",
+        },
+        "DeploymentConfiguration": Object {
+          "MaximumPercent": 200,
+          "MinimumHealthyPercent": 50,
+        },
+        "DesiredCount": 1,
+        "EnableECSManagedTags": false,
+        "HealthCheckGracePeriodSeconds": 60,
+        "LaunchType": "FARGATE",
+        "LoadBalancers": Array [
+          Object {
+            "ContainerName": "flask",
+            "ContainerPort": 80,
+            "TargetGroupArn": Object {
+              "Ref": "mynoobserviceLBPublicListenerECSGroup0909E690",
+            },
+          },
+        ],
+        "NetworkConfiguration": Object {
+          "AwsvpcConfiguration": Object {
+            "AssignPublicIp": "DISABLED",
+            "SecurityGroups": Array [
+              Object {
+                "Fn::GetAtt": Array [
+                  "mynoobserviceServiceSecurityGroup0C79B0A9",
+                  "GroupId",
+                ],
+              },
+            ],
+            "Subnets": Array [
+              Object {
+                "Ref": "mynoobvpcPrivateSubnet1SubnetAA6EC6C6",
+              },
+              Object {
+                "Ref": "mynoobvpcPrivateSubnet2Subnet8DC284CF",
+              },
+            ],
+          },
+        },
+        "TaskDefinition": Object {
+          "Ref": "mynoobtask107184FD",
+        },
+      },
+      "Type": "AWS::ECS::Service",
+    },
+    "mynoobserviceServiceSecurityGroup0C79B0A9": Object {
+      "Properties": Object {
+        "GroupDescription": "my-noob-stack/mynoob/service/Service/SecurityGroup",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "mynoobvpcED49933C",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "mynoobserviceServiceSecurityGroupfrommynoobstackmynoobserviceLBSecurityGroupE55679D880661C1B1F": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "FromPort": 80,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "mynoobserviceServiceSecurityGroup0C79B0A9",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "mynoobserviceLBSecurityGroupCAC7E5DE",
+            "GroupId",
+          ],
+        },
+        "ToPort": 80,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "mynoobtask107184FD": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "Essential": true,
+            "Image": "pahud/flask-docker-sample:latest",
+            "Name": "flask",
+            "PortMappings": Array [
+              Object {
+                "ContainerPort": 80,
+                "Protocol": "tcp",
+              },
+            ],
+          },
+        ],
+        "Cpu": "256",
+        "Family": "mynoobstackmynoobtaskE31C92CF",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": Array [
+          "FARGATE",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "mynoobtaskTaskRoleBB547A88",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "mynoobtaskTaskRoleBB547A88": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "mynoobvpcED49933C": Object {
+      "Properties": Object {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "my-noob-stack/mynoob/vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "mynoobvpcIGW14DEC4A8": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "my-noob-stack/mynoob/vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "mynoobvpcPrivateSubnet1DefaultRoute5C801D86": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "mynoobvpcPublicSubnet1NATGateway7BB33300",
+        },
+        "RouteTableId": Object {
+          "Ref": "mynoobvpcPrivateSubnet1RouteTable147E383C",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "mynoobvpcPrivateSubnet1RouteTable147E383C": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "my-noob-stack/mynoob/vpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "mynoobvpcED49933C",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "mynoobvpcPrivateSubnet1RouteTableAssociation69B1354E": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "mynoobvpcPrivateSubnet1RouteTable147E383C",
+        },
+        "SubnetId": Object {
+          "Ref": "mynoobvpcPrivateSubnet1SubnetAA6EC6C6",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "mynoobvpcPrivateSubnet1SubnetAA6EC6C6": Object {
+      "Properties": Object {
+        "AvailabilityZone": Object {
+          "Fn::Select": Array [
+            0,
+            Object {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.128.0/18",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "my-noob-stack/mynoob/vpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "mynoobvpcED49933C",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "mynoobvpcPrivateSubnet2DefaultRouteE3B598CD": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "mynoobvpcPublicSubnet1NATGateway7BB33300",
+        },
+        "RouteTableId": Object {
+          "Ref": "mynoobvpcPrivateSubnet2RouteTableC2871C2F",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "mynoobvpcPrivateSubnet2RouteTableAssociationCEA766A7": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "mynoobvpcPrivateSubnet2RouteTableC2871C2F",
+        },
+        "SubnetId": Object {
+          "Ref": "mynoobvpcPrivateSubnet2Subnet8DC284CF",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "mynoobvpcPrivateSubnet2RouteTableC2871C2F": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "my-noob-stack/mynoob/vpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "mynoobvpcED49933C",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "mynoobvpcPrivateSubnet2Subnet8DC284CF": Object {
+      "Properties": Object {
+        "AvailabilityZone": Object {
+          "Fn::Select": Array [
+            1,
+            Object {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.192.0/18",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "my-noob-stack/mynoob/vpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "mynoobvpcED49933C",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "mynoobvpcPublicSubnet1DefaultRoute98CF4ECD": Object {
+      "DependsOn": Array [
+        "mynoobvpcVPCGWB0777FF0",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "mynoobvpcIGW14DEC4A8",
+        },
+        "RouteTableId": Object {
+          "Ref": "mynoobvpcPublicSubnet1RouteTable0B583AA2",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "mynoobvpcPublicSubnet1EIPE4671B77": Object {
+      "Properties": Object {
+        "Domain": "vpc",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "my-noob-stack/mynoob/vpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "mynoobvpcPublicSubnet1NATGateway7BB33300": Object {
+      "Properties": Object {
+        "AllocationId": Object {
+          "Fn::GetAtt": Array [
+            "mynoobvpcPublicSubnet1EIPE4671B77",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": Object {
+          "Ref": "mynoobvpcPublicSubnet1SubnetE3F8B341",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "my-noob-stack/mynoob/vpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "mynoobvpcPublicSubnet1RouteTable0B583AA2": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "my-noob-stack/mynoob/vpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "mynoobvpcED49933C",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "mynoobvpcPublicSubnet1RouteTableAssociation8253C409": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "mynoobvpcPublicSubnet1RouteTable0B583AA2",
+        },
+        "SubnetId": Object {
+          "Ref": "mynoobvpcPublicSubnet1SubnetE3F8B341",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "mynoobvpcPublicSubnet1SubnetE3F8B341": Object {
+      "Properties": Object {
+        "AvailabilityZone": Object {
+          "Fn::Select": Array [
+            0,
+            Object {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.0.0/18",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "my-noob-stack/mynoob/vpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "mynoobvpcED49933C",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "mynoobvpcPublicSubnet2DefaultRouteF1860114": Object {
+      "DependsOn": Array [
+        "mynoobvpcVPCGWB0777FF0",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "mynoobvpcIGW14DEC4A8",
+        },
+        "RouteTableId": Object {
+          "Ref": "mynoobvpcPublicSubnet2RouteTable8363B28C",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "mynoobvpcPublicSubnet2RouteTable8363B28C": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "my-noob-stack/mynoob/vpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "mynoobvpcED49933C",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "mynoobvpcPublicSubnet2RouteTableAssociationDC48FE4A": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "mynoobvpcPublicSubnet2RouteTable8363B28C",
+        },
+        "SubnetId": Object {
+          "Ref": "mynoobvpcPublicSubnet2SubnetCC5168CD",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "mynoobvpcPublicSubnet2SubnetCC5168CD": Object {
+      "Properties": Object {
+        "AvailabilityZone": Object {
+          "Fn::Select": Array [
+            1,
+            Object {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.64.0/18",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "my-noob-stack/mynoob/vpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "mynoobvpcED49933C",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "mynoobvpcVPCGWB0777FF0": Object {
+      "Properties": Object {
+        "InternetGatewayId": Object {
+          "Ref": "mynoobvpcIGW14DEC4A8",
+        },
+        "VpcId": Object {
+          "Ref": "mynoobvpcED49933C",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+    },
+  },
+}
+`;
