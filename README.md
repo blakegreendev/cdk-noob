@@ -1,6 +1,16 @@
-# codespace-devtools
+# cdk-noob
 
-Template for development workspace on Codespaces
+A demo construct library created with Projen
+
+# Example
+
+```typescript
+const app = new cdk.App();
+
+const stack = new cdk.Stack(app, 'my-demo-stack');
+
+new Noob(stack, 'Noob');
+```
 
 # AWS SSO 
 
