@@ -15,8 +15,8 @@ const project = new AwsCdkConstructLibrary({
   python: {
     distName: 'cdk-noob',
     module: 'cdk_noob',
-  }                                               
-
+  },                                               
+  releaseBranches: ['main']
 });
 
 const common_exclude = ['cdk.out', 'cdk.context.json', 'images', 'yarn-error.log'];
